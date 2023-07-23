@@ -1,48 +1,21 @@
-function createAsyncFunctionWithLog(
-  methodName: string,
-  originalMethod: (...args: any[]) => Promise<any>
-): (...args: any[]) => Promise<any> {
-  return async function (...args: any[]) {
-    console.log(`
-            fName: ${methodName},
-            vname: input,
-            message: ${args}
-        `);
+type METHOD_NAME = string;
+type V_NAME = "input" | "output";
 
-    const result = await originalMethod.apply(this, args);
-    console.log(`
-            fName: ${methodName},
-            vName: output,
-            message: ${result},
-        `);
+function getContent<METHOD_NAME, V_NAME>(
+  methodName: METHOD_NAME,
+  vName: V_NAME,
+  ...args: any[]
+): { fName: METHOD_NAME; vName: V_NAME; message: string } {
+  let message = JSON.stringify(args);
 
-    return result;
+  return {
+    fName: methodName,
+    vName: vName,
+    message: message,
   };
 }
 
-function createFunctionWithLog(
-  methodName: string,
-  originalMethod: (...args: any[]) => any
-): (...args: any[]) => any {
-  return function (...args: any[]) {
-    console.log(`
-            fName: ${methodName},
-            vname: input,
-            message: ${args}
-        `);
-
-    const result = originalMethod.apply(this, args);
-    console.log(`
-            fName: ${methodName},
-            vName: output,
-            message: ${result},
-        `);
-
-    return result;
-  };
-}
-
-function METHOD_IO_LOGGER(): ClassDecorator {
+export function METHOD_IO_LOGGER(): ClassDecorator {
   return (target: any) => {
     const classMethods = Object.getOwnPropertyNames(target.prototype);
 
@@ -51,15 +24,27 @@ function METHOD_IO_LOGGER(): ClassDecorator {
         const originalMethod = target.prototype[methodName];
 
         if (originalMethod.constructor.name === "AsyncFunction") {
-          target.prototype[methodName] = createAsyncFunctionWithLog(
-            methodName,
-            originalMethod
-          );
+          target.prototype[methodName] = async function (...args: any[]) {
+            const input = getContent(methodName, "input", args);
+            console.log(input);
+
+            const result = await originalMethod.apply(this, args);
+            const output = getContent(methodName, "output", result);
+            console.log(output);
+
+            return result;
+          };
         } else {
-          target.prototype[methodName] = createFunctionWithLog(
-            methodName,
-            originalMethod
-          );
+          target.prototype[methodName] = function (...args: any[]) {
+            const input = getContent(methodName, "input", args);
+            console.log(input);
+
+            const result = originalMethod.apply(this, args);
+            const output = getContent(methodName, "output", result);
+            console.log(output);
+
+            return result;
+          };
         }
       }
     });
