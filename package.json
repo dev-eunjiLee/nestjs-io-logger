@@ -1,0 +1,8 @@
+{
+  "name": "nestjs-io-logger",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@git-personal:dev-eunjiLee/nestjs-io-logger.git",
+  "author": "Eunji Lee <74188470+dev-eunjiLee@users.noreply.github.com>",
+  "license": "MIT"
+}
