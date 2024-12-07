@@ -1,2 +1,1 @@
-# nestjs-io-logger
-logger for input(parameter) and output(return value) in nestjs
+NestJS에서 공통으로 사용 가능한 로그 패키지
