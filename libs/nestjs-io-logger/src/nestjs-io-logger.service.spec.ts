@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { NestjsIoLoggerService } from './nestjs-io-logger.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { NestjsIoLoggerService } from "./nestjs-io-logger.service";
 
-describe('NestjsIoLoggerService', () => {
+describe("NestjsIoLoggerService", () => {
   let service: NestjsIoLoggerService;
 
   beforeEach(async () => {
@@ -12,7 +12,7 @@ describe('NestjsIoLoggerService', () => {
     service = module.get<NestjsIoLoggerService>(NestjsIoLoggerService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });
