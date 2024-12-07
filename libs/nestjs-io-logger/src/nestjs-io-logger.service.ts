@@ -1,23 +1,24 @@
 import { Injectable, Scope, LoggerService } from "@nestjs/common";
 
-@Injectable({ scope: Scope.REQUEST })
+// @Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class NestjsIoLoggerService implements LoggerService {
   private readonly requestId: string;
 
   constructor() {
     this.requestId = new Date().toISOString();
-    console.log("😀", this.requestId);
+    this.log("constructor");
   }
 
   log(message: string) {
-    console.log(message);
+    console.log(this.requestId, message);
   }
 
   error(message: string) {
-    console.error(message);
+    console.error(this.requestId, message);
   }
 
   warn(message: string) {
-    console.warn(message);
+    console.warn(this.requestId, message);
   }
 }
