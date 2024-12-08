@@ -1,8 +1,7 @@
-import { Injectable, Scope, LoggerService } from "@nestjs/common";
+import { Injectable, LoggerService } from "@nestjs/common";
 
-// @Injectable({ scope: Scope.REQUEST })
 @Injectable()
-export class NestjsIoLoggerService implements LoggerService {
+export class CustomLogger implements LoggerService {
   private readonly requestId: string;
 
   constructor() {
