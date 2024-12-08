@@ -1,7 +1,5 @@
-import { Global, Module } from "@nestjs/common";
+import { Global, MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { CustomLogger } from "./nestjs-io-logger.service";
-import { AsyncLocalStorage } from "async_hooks";
-import { AlsType } from "./type";
 import { LoggerStorage } from "./logger-storage.service";
 import { LoggerMiddleware } from "./logger.middleware";
 
@@ -9,7 +7,7 @@ import { LoggerMiddleware } from "./logger.middleware";
   providers: [
     {
       provide: LoggerStorage,
-      useValue: new AsyncLocalStorage<AlsType>(),
+      useClass: LoggerStorage,
     },
     CustomLogger,
     LoggerMiddleware,
@@ -17,4 +15,8 @@ import { LoggerMiddleware } from "./logger.middleware";
   exports: [LoggerStorage, CustomLogger, LoggerMiddleware],
 })
 @Global()
-export class NestjsIoLoggerModule {}
+export class NestjsIoLoggerModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes("*");
+  }
+}

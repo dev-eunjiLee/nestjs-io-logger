@@ -9,8 +9,6 @@ export class LoggerMiddleware implements NestMiddleware {
   constructor(private readonly loggerStorage: LoggerStorage) {}
 
   use(req: Request, res: Response, next: NextFunction) {
-    console.log(req, res);
-
     const store: AlsType = {
       customLogger: new CustomLogger(),
     };

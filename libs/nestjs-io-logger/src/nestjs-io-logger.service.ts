@@ -6,7 +6,6 @@ export class CustomLogger implements LoggerService {
 
   constructor() {
     this.requestId = new Date().toISOString();
-    this.log("constructor");
   }
 
   log(message: string) {
