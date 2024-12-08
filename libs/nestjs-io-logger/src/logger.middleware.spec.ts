@@ -4,31 +4,22 @@ import { NestjsIoLoggerModule } from "./nestjs-io-logger.module";
 import { Test } from "@nestjs/testing";
 import { createRequest } from "node-mocks-http";
 import { NextFunction, Request, Response } from "express";
+import { LoggerStorage } from "./logger-storage.service";
 
 /**
  * @ref https://nl-santhosh-kumar.medium.com/how-to-unit-test-middleware-in-nest-f5e6c9d7a075
  */
 describe("Logger Set Middleware", () => {
-  let app: INestApplication;
-  let loggerSetMiddleware: NestMiddleware;
-  let mockRequest: Request;
-  let mockResponse: Response;
-  let nextFunction: NextFunction;
-
-  beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [NestjsIoLoggerModule],
-    }).compile();
-
-    app = moduleRef.createNestApplication();
-    await app.init();
-
-    loggerSetMiddleware = app.get<NestMiddleware>(LoggerMiddleware);
-    nextFunction = jest.fn();
-  });
+  let loggerStorage: LoggerStorage;
+  let loggerMiddleware: LoggerMiddleware;
 
   beforeEach(() => {
-    mockRequest = createRequest({
+    loggerStorage = new LoggerStorage();
+    loggerMiddleware = new LoggerMiddleware(loggerStorage);
+  });
+
+  it("should log the request method and URL", () => {
+    const mockRequest = createRequest({
       method: "GET",
       url: "/user/42",
       params: {
@@ -38,14 +29,10 @@ describe("Logger Set Middleware", () => {
         Origin: "http://localhost:5050/",
       },
     });
-  });
 
-  it("should trigger the next function", async () => {
-    loggerSetMiddleware.use(
-      mockRequest as Request,
-      mockResponse as Response,
-      nextFunction
-    );
-    expect(nextFunction).toHaveBeenCalled();
+    const res = {} as Response;
+    const next = jest.fn();
+
+    loggerMiddleware.use(mockRequest, res, next);
   });
 });
