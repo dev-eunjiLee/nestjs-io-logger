@@ -1,13 +1,16 @@
-import { NestMiddleware } from "@nestjs/common";
+import { Injectable, NestMiddleware } from "@nestjs/common";
 import { NextFunction, Request, Response } from "express";
 import { LoggerStorage } from "./logger-storage.service";
 import { CustomLogger } from "./nestjs-io-logger.service";
 import { AlsType } from "./type";
 
+@Injectable()
 export class LoggerMiddleware implements NestMiddleware {
   constructor(private readonly loggerStorage: LoggerStorage) {}
 
   use(req: Request, res: Response, next: NextFunction) {
+    console.log(req, res);
+
     const store: AlsType = {
       customLogger: new CustomLogger(),
     };

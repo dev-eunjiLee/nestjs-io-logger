@@ -3,6 +3,7 @@ import { CustomLogger } from "./nestjs-io-logger.service";
 import { AsyncLocalStorage } from "async_hooks";
 import { AlsType } from "./type";
 import { LoggerStorage } from "./logger-storage.service";
+import { LoggerMiddleware } from "./logger.middleware";
 
 @Module({
   providers: [
@@ -11,8 +12,9 @@ import { LoggerStorage } from "./logger-storage.service";
       useValue: new AsyncLocalStorage<AlsType>(),
     },
     CustomLogger,
+    LoggerMiddleware,
   ],
-  exports: [LoggerStorage],
+  exports: [LoggerStorage, CustomLogger, LoggerMiddleware],
 })
 @Global()
 export class NestjsIoLoggerModule {}
